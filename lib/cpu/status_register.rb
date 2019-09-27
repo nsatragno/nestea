@@ -1,14 +1,14 @@
 module CPU
   class StatusRegister
-    attr_reader :register
+    attr_accessor :register
 
     def ==(other)
       other.class == self.class and
-        other.register == @register
+        other.register == @register or other == @register
     end
 
-    def initialize
-      @register = 0x34
+    def initialize(initial_value = 0x34)
+      @register = initial_value
     end
 
     def to_s
