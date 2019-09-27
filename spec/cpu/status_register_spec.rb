@@ -30,6 +30,4 @@ describe CPU::StatusRegister do
 
     it "treats different classes as different" do
       expect(status).not_to eq(String.new)
-    end
-  end
-end
+    end end end
