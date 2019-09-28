@@ -11,6 +11,12 @@ describe CPU::ADDR do
     cpu
   end
 
+  it "trying to use implicit raises an error" do
+    expect {
+      expect(CPU::ADDR.implicit(cpu))
+    }.to raise_error "Tried to use the implicit addressing mode."
+  end
+
   it "accumulator returns the value of the accumulator" do
     cpu.accumulator = 0xFE
     expect(CPU::ADDR.accumulator(cpu)).to eq(0xFE)
