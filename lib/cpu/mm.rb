@@ -1,7 +1,17 @@
 module CPU
   class MM
     def initialize
-      @ram = Array.new 2048
+      @ram = Array.new 0x0800
+      # TODO read from cartridge.
+      @rom = Array.new 0xBFE0
+
+      (0..0x0800).each do |n|
+        @ram[n] = 0
+      end
+
+      (0xBFE0..0xFFFF).each do |n|
+        @rom[n] = 0
+      end
     end
 
     def put(position, value)
@@ -22,6 +32,8 @@ module CPU
       case position
       when 0...0x2000
         return @ram[position % 0x0800]
+      when 0x4020..0xFFFF
+        return @rom[position]
       else
         raise "Unhandled position 0x#{position.to_s(16)}"
       end

@@ -38,6 +38,93 @@ describe CPU::StatusRegister do
     expect(status.register).to eq 0b00000000
   end
 
+  it "gets the zero" do
+    status.register = 0b00000000
+    expect(status.zero).to eq 0
+
+    status.register = 0b00000010
+    expect(status.zero).to eq 1
+
+    status.register = 0b11111101
+    expect(status.zero).to eq 0
+
+    status.register = 0b11111111
+    expect(status.zero).to eq 1
+  end
+
+  it "sets the zero" do
+    status.register = 0b00000000
+    status.zero = 1
+    expect(status.register).to eq 0b00000010
+
+    status.zero = true
+    expect(status.register).to eq 0b00000010
+
+    status.zero = 0
+    expect(status.register).to eq 0b00000000
+
+    status.zero = false
+    expect(status.register).to eq 0b00000000
+  end
+
+  it "gets the overflow" do
+    status.register = 0b00000000
+    expect(status.overflow).to eq 0
+
+    status.register = 0b00100000
+    expect(status.overflow).to eq 1
+
+    status.register = 0b11011111
+    expect(status.overflow).to eq 0
+
+    status.register = 0b11111111
+    expect(status.overflow).to eq 1
+  end
+
+  it "sets the overflow" do
+    status.register = 0b00000000
+    status.overflow = 1
+    expect(status.register).to eq 0b00100000
+
+    status.overflow = true
+    expect(status.register).to eq 0b00100000
+
+    status.overflow = 0
+    expect(status.register).to eq 0b00000000
+
+    status.overflow = false
+    expect(status.register).to eq 0b00000000
+  end
+
+  it "gets the negative" do
+    status.register = 0b00000000
+    expect(status.negative).to eq 0
+
+    status.register = 0b01000000
+    expect(status.negative).to eq 1
+
+    status.register = 0b10111111
+    expect(status.negative).to eq 0
+
+    status.register = 0b11111111
+    expect(status.negative).to eq 1
+  end
+
+  it "sets the negative" do
+    status.register = 0b00000000
+    status.negative = 1
+    expect(status.register).to eq 0b01000000
+
+    status.negative = true
+    expect(status.register).to eq 0b01000000
+
+    status.negative = 0
+    expect(status.register).to eq 0b00000000
+
+    status.negative = false
+    expect(status.register).to eq 0b00000000
+  end
+
   describe "equality comparison" do
     it "treats equal registers as equal" do
       expect(status).to eq(CPU::StatusRegister.new)

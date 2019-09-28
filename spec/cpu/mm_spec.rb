@@ -43,4 +43,10 @@ describe CPU::MM do
       expect(mm.peek i).to eq(num), "expected reflected at 0x#{i.to_s(16)}"
     end
   end
+
+  it "initializes the memory to 0" do
+    (0..0x0800).each do |n|
+      expect(mm.peek n).to eq(0)
+    end
+  end
 end
