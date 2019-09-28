@@ -11,10 +11,14 @@ describe CPU::ADDR do
     cpu
   end
 
-  describe "immediate" do
-    it "returns the value of the next position" do
-      expect(CPU::ADDR.immediate(cpu)).to eq(0x10)
-      expect(cpu.pc).to eq(0x01)
-    end
+  it "accumulator returns the value of the accumulator" do
+    cpu.accumulator = 0xFE
+    expect(CPU::ADDR.accumulator(cpu)).to eq(0xFE)
+    expect(cpu.pc).to eq(0x00)
+  end
+
+  it "immediate returns the value of the next position" do
+    expect(CPU::ADDR.immediate(cpu)).to eq(0x10)
+    expect(cpu.pc).to eq(0x01)
   end
 end

@@ -3,13 +3,14 @@ require './lib/cpu/status_register'
 
 module CPU
   class Cpu
-    attr_reader :accumulator
-    attr_reader :index_x
-    attr_reader :index_y
-    attr_reader :status
-    attr_reader :sp
-    attr_reader :mm
+    attr_accessor :accumulator
+    attr_accessor :index_x
+    attr_accessor :index_y
+    attr_accessor :status
+    attr_accessor :sp
     attr_accessor :pc
+
+    attr_reader :mm
 
     def initialize
       @accumulator = 0
