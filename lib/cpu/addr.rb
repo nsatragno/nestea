@@ -11,5 +11,9 @@ module CPU
     def self.immediate(cpu)
       cpu.fetch
     end
+
+    def self.zero_page(cpu)
+      cpu.mm.peek(cpu.fetch)
+    end
   end
 end

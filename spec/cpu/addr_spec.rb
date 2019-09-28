@@ -8,6 +8,7 @@ describe CPU::ADDR do
     cpu = CPU::Cpu.new
     cpu.pc = 0
     cpu.mm.put 0, 0x10
+    cpu.mm.put 0x10, 0xFF
     cpu
   end
 
@@ -25,6 +26,11 @@ describe CPU::ADDR do
 
   it "immediate returns the value of the next position" do
     expect(CPU::ADDR.immediate(cpu)).to eq(0x10)
+    expect(cpu.pc).to eq(0x01)
+  end
+
+  it "zero_page returns the value of the position on 0 + operand" do
+    expect(CPU::ADDR.zero_page(cpu)).to eq(0xFF)
     expect(cpu.pc).to eq(0x01)
   end
 end
