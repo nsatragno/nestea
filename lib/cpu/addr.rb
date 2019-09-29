@@ -29,5 +29,28 @@ module CPU
     def self.relative(cpu)
       cpu.mm.peek(UTIL.signed_int(cpu.fetch) + cpu.pc)
     end
+
+    def self.absolute(cpu)
+      cpu.mm.peek(fetch_address(cpu))
+    end
+
+    def self.absolute_x(cpu)
+      cpu.mm.peek((fetch_address(cpu) + cpu.index_x) & 0xFFFF)
+    end
+
+    def self.absolute_y(cpu)
+      cpu.mm.peek((fetch_address(cpu) + cpu.index_y) & 0xFFFF)
+    end
+
+    def self.indirect(cpu)
+      target = fetch_address(cpu)
+      addr = cpu.mm.peek(target) + ((cpu.mm.peek(target + 1 & 0xFFFF)) << 8)
+      cpu.mm.peek(addr)
+    end
+
+    private
+    def self.fetch_address(cpu)
+      cpu.fetch + (cpu.fetch << 8)
+    end
   end
 end

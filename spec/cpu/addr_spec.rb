@@ -83,4 +83,71 @@ describe CPU::ADDR do
     expect(CPU::ADDR.relative(cpu)).to eq(0xAC)
     expect(cpu.pc).to eq(0x01)
   end
+
+  it "absolute fetches two positions and addresses in little endian" do
+    cpu.mm.put 0x00, 0x20
+    cpu.mm.put 0x01, 0x10
+    cpu.mm.put 0x1020, 0xAA
+    expect(CPU::ADDR.absolute(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x02)
+  end
+
+  it "absolute_x adds x to the absolute addressing" do
+    cpu.mm.put 0x00, 0x20
+    cpu.mm.put 0x01, 0x10
+    cpu.mm.put 0x102F, 0xAA
+    cpu.index_x = 0x0F
+    expect(CPU::ADDR.absolute_x(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x02)
+  end
+
+  it "absolute_x overflows" do
+    cpu.mm.put 0x00, 0xFF
+    cpu.mm.put 0x01, 0xFF
+    cpu.index_x = 0x01
+    expect(CPU::ADDR.absolute_x(cpu)).to eq(0xFF)
+    expect(cpu.pc).to eq(0x02)
+  end
+
+  it "absolute_y adds y to the absolute addressing" do
+    cpu.mm.put 0x00, 0x20
+    cpu.mm.put 0x01, 0x10
+    cpu.mm.put 0x102F, 0xAA
+    cpu.index_y = 0x0F
+    expect(CPU::ADDR.absolute_y(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x02)
+  end
+
+  it "absolute_y overflows" do
+    cpu.mm.put 0x00, 0xFF
+    cpu.mm.put 0x01, 0xFF
+    cpu.index_y = 0x01
+    expect(CPU::ADDR.absolute_y(cpu)).to eq(0xFF)
+    expect(cpu.pc).to eq(0x02)
+  end
+
+  it "indirect fetches target address" do
+    cpu.mm.put 0x00, 0x01
+    cpu.mm.put 0x01, 0x02
+
+    cpu.mm.put 0x0201, 0x20
+    cpu.mm.put 0x0202, 0x10
+
+    cpu.mm.put 0x1020, 0xAA
+
+    expect(CPU::ADDR.indirect(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x02)
+  end
+
+  it "indirect overflows MSB" do
+    cpu.mm.put 0x00, 0xFF
+    cpu.mm.put 0x01, 0xFF
+
+    # the target address will be 0xFF00 (from 0x00 and 0xFFFF).
+    # we can't write there, so we use a mock to verify and expect 0x00.
+    allow(cpu.mm).to receive(:peek).and_call_original
+    expect(CPU::ADDR.indirect(cpu)).to eq(0x00)
+    expect(cpu.pc).to eq(0x02)
+    expect(cpu.mm).to have_received(:peek).with 0xFF00
+  end
 end
