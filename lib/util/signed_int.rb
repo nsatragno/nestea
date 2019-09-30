@@ -10,4 +10,8 @@ module UTIL
     return int if int >= 0
     int + 0xFF + 1
   end
+
+  def self.is_negative(byte)
+    (byte & 0b10000000) != 0
+  end
 end

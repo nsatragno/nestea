@@ -1,3 +1,5 @@
+require "./lib/util/signed_int.rb"
+
 module CPU
   module INSTR
     ADC = do |cpu, addr|
@@ -12,8 +14,9 @@ module CPU
       end
 
       cpu.status.zero = result == 0
-      cpu.status.overflow = result & 0b10000000 != cpu.accumulator & 0b10000000
-      cpu.status.negative = result & 0b10000000
+      cpu.status.overflow =
+        Util.is_negative(result) != Util.is_negative(cpu.accumulator)
+      cpu.status.negative = Util.is_negative result
     end
   end
 end

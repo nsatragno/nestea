@@ -53,3 +53,25 @@ describe "UTIL.byte_from_signed_int" do
     }.to raise_error "Input 0x-81 is out of range"
   end
 end
+
+describe "is_negative" do
+  it "returns false for 0" do
+    expect(UTIL.is_negative(0)).to eq(false)
+  end
+
+  it "returns true for -1" do
+    expect(UTIL.is_negative(0xFF)).to eq(true)
+  end
+
+  it "returns true for -128" do
+    expect(UTIL.is_negative(0x80)).to eq(true)
+  end
+
+  it "returns false for 1" do
+    expect(UTIL.is_negative(0x01)).to eq(false)
+  end
+
+  it "returns false for 127" do
+    expect(UTIL.is_negative(0x7F)).to eq(false)
+  end
+end
