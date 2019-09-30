@@ -150,4 +150,57 @@ describe CPU::ADDR do
     expect(cpu.pc).to eq(0x02)
     expect(cpu.mm).to have_received(:peek).with 0xFF00
   end
+
+  it "indexed_indirect fetches target address" do
+    cpu.mm.put 0x00, 0xF0
+    cpu.index_x = 0x0E
+
+    cpu.mm.put 0xFE, 0x20
+    cpu.mm.put 0xFF, 0x10
+
+    cpu.mm.put 0x1020, 0xAA
+
+    expect(CPU::ADDR.indexed_indirect(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x01)
+  end
+
+  it "indexed_indirect overflows on zero page" do
+    cpu.mm.put 0x00, 0xFF
+    cpu.index_x = 0x11
+
+    cpu.mm.put 0x10, 0x20
+    cpu.mm.put 0x11, 0x10
+
+    cpu.mm.put 0x1020, 0xAA
+
+    expect(CPU::ADDR.indexed_indirect(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x01)
+  end
+
+  it "indirect_indexed fetches target address" do
+    cpu.mm.put 0x00, 0xF0
+
+    cpu.mm.put 0xF0, 0x20
+    cpu.mm.put 0xF1, 0x10
+    cpu.index_y = 0x10
+
+    cpu.mm.put 0x1030, 0xAA
+
+    expect(CPU::ADDR.indirect_indexed(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x01)
+  end
+
+  it "indirect_indexed overflows" do
+    cpu.mm.put 0x00, 0x10
+
+    cpu.mm.put 0x10, 0xFF
+    cpu.mm.put 0x11, 0xFF
+    cpu.index_y = 0x21
+
+    cpu.mm.put 0x0020, 0xAA
+
+    # the result address will be 0x0010
+    expect(CPU::ADDR.indirect_indexed(cpu)).to eq(0xAA)
+    expect(cpu.pc).to eq(0x01)
+  end
 end
