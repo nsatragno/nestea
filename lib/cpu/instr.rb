@@ -2,8 +2,8 @@ require "./lib/util/signed_int.rb"
 
 module CPU
   module INSTR
-    ADC = do |cpu, addr|
-      operand = addr cpu
+    def self.adc(cpu, addr)
+      operand = addr.call(cpu)
       result = cpu.accumulator + operand + cpu.status.carry
 
       if result > 0xFF
@@ -14,9 +14,15 @@ module CPU
       end
 
       cpu.status.zero = result == 0
-      cpu.status.overflow =
-        Util.is_negative(result) != Util.is_negative(cpu.accumulator)
-      cpu.status.negative = Util.is_negative result
+      if UTIL.is_negative(cpu.accumulator) and UTIL.is_negative(operand)
+        cpu.status.overflow = !UTIL.is_negative(result)
+      elsif !UTIL.is_negative(cpu.accumulator) and !UTIL.is_negative(operand)
+        cpu.status.overflow = UTIL.is_negative(result)
+      else
+        cpu.status.overflow = 0
+      end
+      cpu.status.negative = UTIL.is_negative result
+      cpu.accumulator = result
     end
   end
 end
